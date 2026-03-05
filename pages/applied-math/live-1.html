@@ -3,34 +3,453 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Placeholder de Slides</title>
+  <title>Live 1 - Matrizes na Computação</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/theme/black.css">
   <style>
-    body {
-      min-height: 100vh;
-      background: linear-gradient(135deg, #e5e7eb, #d1d5db);
-      color: #111827;
+    .reveal {
+      color: #e0e0e0;
     }
-
-    .slide-placeholder {
-      max-width: 900px;
-      margin: 0 auto;
-      background: #fff;
-      border: 1px solid #d1d5db;
-      border-radius: 16px;
-      padding: 2rem;
-      box-shadow: 0 10px 30px rgba(17, 24, 39, 0.12);
+    .reveal h1, .reveal h2, .reveal h3, .reveal h4 {
+      text-transform: none;
+      color: #ffffff;
+      white-space: nowrap;
+      font-size: 1.4em;
+    }
+    .reveal h1 {
+      font-size: 1.8em;
+    }
+    .reveal h2 {
+      color: #f5f5f5;
+      font-size: 1.5em;
+    }
+    .reveal h3, .reveal h5 {
+      color: #eeeeee;
+    }
+    .reveal p, .reveal li, .reveal td, .reveal th {
+      color: #d0d0d0;
+    }
+    .reveal strong, .reveal b {
+      color: #ffffff;
+    }
+    .reveal pre {
+      box-shadow: none;
+      background: #1a1a1a;
+    }
+    .reveal pre code {
+      max-height: 400px;
+      font-size: 0.75em;
+      color: #e8e8e8;
+      background: transparent;
+    }
+    .reveal ul {
+      font-size: 0.85em;
+    }
+    .reveal .slide-number {
+      font-size: 0.6em;
+      color: #999;
+    }
+    .code-small pre code {
+      font-size: 0.6em;
+    }
+    .highlight-box {
+      background: rgba(255,255,255,0.08);
+      border-left: 4px solid #cccccc;
+      padding: 1rem;
+      margin: 1rem 0;
+      color: #e0e0e0;
+    }
+    .highlight-box strong {
+      color: #ffffff;
+    }
+    .reveal .text-muted {
+      color: #a0a0a0 !important;
+    }
+    .reveal table {
+      font-size: 0.75em;
+    }
+    .reveal code {
+      color: #f0f0f0;
+      background: #2a2a2a;
+      padding: 0.2em 0.4em;
+      border-radius: 3px;
+    }
+    .reveal a {
+      color: #cccccc;
+    }
+    .reveal a:hover {
+      color: #ffffff;
+    }
+    .matrix-visual {
+      font-family: 'Courier New', monospace;
+      font-size: 0.8em;
+      color: #4CAF50;
     }
   </style>
 </head>
 <body>
-  <main class="container py-5">
-    <a href="./main.html" class="btn btn-dark mb-4">Voltar para lives</a>
-    <section class="slide-placeholder">
-      <h1 class="h3 fw-bold mb-3">Estrutura de Slides (Placeholder)</h1>
-      <p class="mb-0">Substituir este conteúdo quando você enviar o material da live.</p>
-    </section>
-  </main>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+  <div class="reveal">
+    <div class="slides">
+
+      <!-- Slide 1: Capa -->
+      <section>
+        <h1>🔢 Matrizes na Computação</h1>
+        <h3>Uma Jornada Lúdica pelo Mundo das Matrizes</h3>
+        <p class="text-muted">Live 1 - Applied Math for Data Science</p>
+        <p style="font-size: 0.6em; margin-top: 2rem;">
+          <strong>Descubra como matrizes estão em tudo:</strong> imagens, jogos, IA e muito mais!
+        </p>
+      </section>
+
+      <!-- Slide 2: Introdução -->
+      <section>
+        <h2>🎮 O Que São Matrizes?</h2>
+        <div class="highlight-box">
+          <p><strong>"Uma matriz é como uma planilha de Excel ou uma tabela de dados organizada em linhas e colunas."</strong></p>
+        </div>
+        <p style="font-size: 0.8em;">Imagine uma grade, como um tabuleiro de xadrez ou uma folha de papel quadriculado!</p>
+        <div class="matrix-visual" style="margin-top: 1rem;">
+          <pre>
+    ┌─────────────────┐
+    │ 1  2  3  4  5  │
+    │ 6  7  8  9  10 │  ← 3 linhas × 5 colunas
+    │ 11 12 13 14 15 │
+    └─────────────────┘
+          </pre>
+        </div>
+        <p class="text-muted" style="font-size: 0.6em;">Cada número tem uma posição única: <strong>(linha, coluna)</strong></p>
+      </section>
+
+      <!-- Slide 3: Notação -->
+      <section>
+        <h2>📝 Como Representamos Matrizes?</h2>
+        <div class="row">
+          <div class="col-6">
+            <h5>Notação Matemática</h5>
+            <div class="matrix-visual">
+              <pre>
+    A = [ 2  4  6 ]
+        [ 1  3  5 ]
+
+    A é 2×3 (2 linhas, 3 colunas)
+              </pre>
+            </div>
+          </div>
+          <div class="col-6">
+            <h5>Em Python (NumPy)</h5>
+            <pre><code class="language-python">import numpy as np
+
+A = np.array([
+    [2, 4, 6],
+    [1, 3, 5]
+])
+
+print(A.shape)  # (2, 3)</code></pre>
+          </div>
+        </div>
+        <p class="text-muted" style="font-size: 0.6em; margin-top: 1rem;"><strong>Elemento A[1, 2]</strong> = 5 (linha 1, coluna 2, começando do 0!)</p>
+      </section>
+
+      <!-- Slide 4: Por Que Matrizes? -->
+      <section>
+        <h2>🤔 Por Que Usar Matrizes?</h2>
+        <ul>
+          <li><strong>Organização:</strong> Dados estruturados de forma lógica</li>
+          <li><strong>Eficiência:</strong> Operações em lote (vetorização)</li>
+          <li><strong>Universalidade:</strong> Linguagem comum da computação</li>
+          <li><strong>Poder:</strong> Base de Machine Learning e IA</li>
+        </ul>
+        <div class="highlight-box" style="margin-top: 1rem;">
+          <p style="font-size: 0.6em; margin: 0;">
+            <strong>💡 Analogia:</strong> Assim como LEGO permite construir coisas complexas com peças simples, matrizes permitem construir algoritmos complexos com operações básicas!
+          </p>
+        </div>
+      </section>
+
+      <!-- Slide 5: Matrizes e Imagens -->
+      <section>
+        <h2>🖼️ Matrizes São Imagens!</h2>
+        <p style="font-size: 0.8em;">Toda imagem digital é uma matriz de pixels!</p>
+        <div class="row">
+          <div class="col-6">
+            <h5>Imagem em Escala de Cinza</h5>
+            <div class="matrix-visual">
+              <pre>
+[ 0   50  100 150 ]
+[ 50  100 150 200 ]
+[ 100 150 200 255 ]
+              </pre>
+            </div>
+            <p style="font-size: 0.6em;">0 = preto, 255 = branco</p>
+          </div>
+          <div class="col-6">
+            <h5>Imagem Colorida (RGB)</h5>
+            <p style="font-size: 0.6em;">3 matrizes empilhadas:</p>
+            <div class="matrix-visual">
+              <pre>
+R: [255 0   0  ]
+G: [0   255 0  ]  ← RGB
+B: [0   0   255]
+              </pre>
+            </div>
+            <p style="font-size: 0.6em;">Cada canal é uma matriz!</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Slide 6: Operações Básicas -->
+      <section>
+        <h2>➕ Operações Básicas com Matrizes</h2>
+        <div class="row">
+          <div class="col-6">
+            <h5>Adição</h5>
+            <pre><code class="language-python">A = [[1, 2],      B = [[5, 6],
+     [3, 4]]           [7, 8]]
+
+A + B = [[6,  8 ],
+         [10, 12]]</code></pre>
+            <p style="font-size: 0.6em;">Soma elemento por elemento!</p>
+          </div>
+          <div class="col-6">
+            <h5>Multiplicação por Escalar</h5>
+            <pre><code class="language-python">A = [[1, 2],
+     [3, 4]]
+
+3 × A = [[3,  6 ],
+         [9,  12]]</code></pre>
+            <p style="font-size: 0.6em;">Multiplica todos os elementos!</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Slide 7: Multiplicação de Matrizes -->
+      <section>
+        <h2>✖️ Multiplicação de Matrizes</h2>
+        <p style="font-size: 0.7em;">Regra de ouro: <strong>(m×n) × (n×p) = (m×p)</strong></p>
+        <div class="matrix-visual" style="font-size: 0.6em;">
+          <pre>
+    [1  2]   [5  6]   [1×5+2×7   1×6+2×8]   [19  22]
+    [3  4] × [7  8] = [3×5+4×7   3×6+4×8] = [43  50]
+          </pre>
+        </div>
+        <div class="highlight-box" style="margin-top: 1rem;">
+          <p style="font-size: 0.55em; margin: 0;">
+            <strong>🎯 Analogia:</strong> É como combinar ingredientes de uma receita com preços de um cardápio para calcular o custo total de cada prato!
+          </p>
+        </div>
+        <pre style="margin-top: 1rem;"><code class="language-python">import numpy as np
+A = np.array([[1, 2], [3, 4]])
+B = np.array([[5, 6], [7, 8]])
+C = A @ B  # ou np.dot(A, B)
+print(C)  # [[19 22], [43 50]]</code></pre>
+      </section>
+
+      <!-- Slide 8: Transformações Geométricas -->
+      <section>
+        <h2>🔄 Matrizes Transformam o Mundo!</h2>
+        <p style="font-size: 0.7em;">Rotação, escala e translação em jogos e gráficos são matrizes!</p>
+        <div class="row">
+          <div class="col-4">
+            <h5>Rotação</h5>
+            <pre><code class="language-python">[cos θ  -sin θ]
+[sin θ   cos θ]</code></pre>
+          </div>
+          <div class="col-4">
+            <h5>Escala</h5>
+            <pre><code class="language-python">[sx  0 ]
+[0   sy]</code></pre>
+          </div>
+          <div class="col-4">
+            <h5>Translação</h5>
+            <pre><code class="language-python">[1  0  tx]
+[0  1  ty]
+[0  0  1 ]</code></pre>
+          </div>
+        </div>
+        <p class="text-muted" style="font-size: 0.55em; margin-top: 1rem;">
+          <strong>🎮 Todo jogo 3D usa essas matrizes</strong> para mover personagens e câmeras!
+        </p>
+      </section>
+
+      <!-- Slide 9: Sistemas Lineares -->
+      <section>
+        <h2>🧩 Resolvendo Quebra-Cabeças com Matrizes</h2>
+        <p style="font-size: 0.7em;">Sistemas de equações lineares viram <strong>A × x = b</strong></p>
+        <div class="row">
+          <div class="col-6">
+            <h5>Sistema</h5>
+            <pre><code>2x + 3y = 8
+ x + 2y = 5</code></pre>
+          </div>
+          <div class="col-6">
+            <h5>Forma Matricial</h5>
+            <pre><code class="language-python">[2  3] [x]   [8]
+[1  2] [y] = [5]
+
+A    x = b</code></pre>
+          </div>
+        </div>
+        <pre style="margin-top: 1rem;"><code class="language-python">import numpy as np
+A = np.array([[2, 3], [1, 2]])
+b = np.array([8, 5])
+x = np.linalg.solve(A, b)
+print(x)  # [1. 2.] → x=1, y=2</code></pre>
+        <p class="text-muted" style="font-size: 0.55em;">Usado em física, economia, engenharia e otimização!</p>
+      </section>
+
+      <!-- Slide 10: Machine Learning -->
+      <section>
+        <h2>🤖 Matrizes São o Coração da IA!</h2>
+        <p style="font-size: 0.7em;">Redes neurais são basicamente... muitas multiplicações de matrizes!</p>
+        <div class="matrix-visual" style="font-size: 0.55em;">
+          <pre>
+    Entrada × Pesos + Bias = Saída
+    
+    [x₁ x₂ x₃] × [w₁₁ w₁₂] + [b₁] = [a₁]
+                 [w₂₁ w₂₂]   [b₂]   [a₂]
+                 [w₃₁ w₃₂]
+          </pre>
+        </div>
+        <ul style="font-size: 0.7em; margin-top: 1rem;">
+          <li><strong>Dataset:</strong> Matriz (amostras × features)</li>
+          <li><strong>Camadas da rede:</strong> Matrizes de pesos</li>
+          <li><strong>Forward pass:</strong> Multiplicação de matrizes</li>
+          <li><strong>Backpropagation:</strong> Mais matrizes (gradientes)!</li>
+        </ul>
+      </section>
+
+      <!-- Slide 11: Data Science -->
+      <section>
+        <h2>📊 Matrizes em Data Science</h2>
+        <p style="font-size: 0.7em;">Todo dataset é uma matriz!</p>
+        <div class="matrix-visual" style="font-size: 0.55em;">
+          <pre>
+         │ Idade │ Salário │ Score │
+    ─────┼───────┼─────────┼───────┤
+    0   │  25   │  50000  │  85   │
+    1   │  32   │  65000  │  92   │  ← Cada linha = um cliente
+    2   │  28   │  55000  │  78   │
+    3   │  35   │  72000  │  88   │
+          </pre>
+        </div>
+        <ul style="font-size: 0.7em; margin-top: 1rem;">
+          <li><strong>Linhas:</strong> Amostras/observações</li>
+          <li><strong>Colunas:</strong> Features/variáveis</li>
+          <li><strong>PCA, SVD, Regressão:</strong> Tudo usa álgebra linear!</li>
+        </ul>
+      </section>
+
+      <!-- Slide 12: Recomendação -->
+      <section>
+        <h2>🎬 Sistemas de Recomendação</h2>
+        <p style="font-size: 0.7em;">Netflix e Spotify usam <strong>Matrix Factorization</strong>!</p>
+        <div class="matrix-visual" style="font-size: 0.5em;">
+          <pre>
+    Matriz Usuário-Filme (notas 1-5):
+
+         │ Film1 │ Film2 │ Film3 │ Film4 │
+    ─────┼───────┼───────┼───────┼───────┤
+    Ana  │   5   │   3   │   ?   │   4   │
+    Bob  │   4   │   ?   │   2   │   ?   │  ← Prever notas faltantes!
+    Cal  │   ?   │   4   │   5   │   3   │
+          </pre>
+        </div>
+        <p style="font-size: 0.6em; margin-top: 1rem;">
+          <strong>Decomposição de matrizes</strong> descobre padrões ocultos e prevê preferências!
+        </p>
+      </section>
+
+      <!-- Slide 13: Grafos e Redes -->
+      <section>
+        <h2>🕸️ Matrizes de Adjacência</h2>
+        <p style="font-size: 0.7em;">Grafos (redes sociais, rotas) viram matrizes!</p>
+        <div class="row">
+          <div class="col-6">
+            <h5>Grafo</h5>
+            <pre><code>
+    A -- B
+    |    |
+    C -- D
+</code></pre>
+          </div>
+          <div class="col-6">
+            <h5>Matriz de Adjacência</h5>
+            <pre><code class="language-python">
+    A B C D
+  A 0 1 1 0
+  B 1 0 0 1
+  C 1 0 0 1
+  D 0 1 1 0
+</code></pre>
+          </div>
+        </div>
+        <p class="text-muted" style="font-size: 0.55em;">
+          1 = conectado, 0 = não conectado. PageRank do Google usa isso!
+        </p>
+      </section>
+
+      <!-- Slide 14: Resumo Visual -->
+      <section>
+        <h2>🎯 Onde Matrizes Aparecem?</h2>
+        <table class="table table-sm" style="font-size: 0.6em;">
+          <thead>
+            <tr>
+              <th>Área</th>
+              <th>Aplicação</th>
+              <th>O Que a Matriz Representa</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>🖼️ Imagens</td><td>Processamento</td><td>Pixels (cores)</td></tr>
+            <tr><td>🎮 Jogos</td><td>Gráficos 3D</td><td>Transformações</td></tr>
+            <tr><td>🤖 IA/ML</td><td>Redes Neurais</td><td>Pesos e dados</td></tr>
+            <tr><td>📊 Data Science</td><td>Análise</td><td>Dataset completo</td></tr>
+            <tr><td>🎬 Recomendação</td><td>Filtragem</td><td>Preferências</td></tr>
+            <tr><td>🕸️ Redes</td><td>PageRank</td><td>Conexões</td></tr>
+            <tr><td>🔬 Ciência</td><td>Simulações</td><td>Sistemas físicos</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- Slide 15: Próximos passos -->
+      <section>
+        <h2>🚀 Próximos Passos</h2>
+        <ul>
+          <li>Praticar operações com NumPy</li>
+          <li>Explorar visualização de imagens como matrizes</li>
+          <li>Entender transformações geométricas</li>
+          <li>Aplicar em problemas reais de Data Science</li>
+        </ul>
+        <div class="highlight-box mt-4">
+          <p class="mb-0"><strong>Material complementar:</strong> Notebook com exemplos práticos e lúdicos</p>
+        </div>
+        <p style="font-size: 0.6em; margin-top: 2rem;">
+          <a href="#" onclick="window.open('live-1.ipynb', '_blank'); return false;" class="btn btn-primary btn-sm">📓 Abrir Notebook</a>
+        </p>
+      </section>
+
+      <!-- Slide 16: Fim -->
+      <section>
+        <h1>🎉 Obrigado!</h1>
+        <p class="text-muted">Dúvidas?</p>
+        <p style="font-size: 0.6em; margin-top: 2rem;">
+          <a href="./main.html" class="btn btn-secondary btn-sm">Voltar para lives</a>
+        </p>
+      </section>
+
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/plugin/highlight/highlight.js"></script>
+  <script>
+    Reveal.initialize({
+      hash: true,
+      slideNumber: true,
+      transition: 'slide',
+      plugins: [RevealHighlight]
+    });
+  </script>
 </body>
 </html>
