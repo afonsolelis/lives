@@ -1,0 +1,35 @@
+.venv/
+.ipython/
+.jupyter-config/
+.jupyter-data/
+
+# Python virtual environments and tooling
+venv/
+env/
+ENV/
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Environment variable files
+.env
+.env.*
+*.env
+*.env.local
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Windows
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Linux and editor temp files
+*~
+.fuse_hidden*
+.directory
