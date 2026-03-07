@@ -3,34 +3,746 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Placeholder de Slides</title>
+  <title>Live 3 - Estatistica, Probabilidade e Previsao</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/theme/black.css">
   <style>
-    body {
-      min-height: 100vh;
-      background: linear-gradient(135deg, #e5e7eb, #d1d5db);
-      color: #111827;
+    :root {
+      --bg: #07101d;
+      --panel: rgba(15, 23, 42, 0.88);
+      --border: rgba(255, 255, 255, 0.1);
+      --text: #e5eefb;
+      --muted: #c0cadb;
+      --cyan: #74c7ec;
+      --mint: #8ce99a;
+      --gold: #ffd166;
+      --pink: #ff8fab;
+      --axis: rgba(255, 255, 255, 0.22);
     }
 
-    .slide-placeholder {
-      max-width: 900px;
+    .reveal { color: var(--text); }
+    .reveal h1, .reveal h2, .reveal h3, .reveal h4 {
+      text-transform: none;
+      color: #fff;
+    }
+    .reveal h1 { font-size: 1.9em; }
+    .reveal h2 { font-size: 1.45em; }
+    .reveal p, .reveal li { color: var(--muted); font-size: 0.88em; }
+    .reveal strong, .reveal b { color: #fff; }
+    .reveal mjx-container {
+      margin: 0.2em 0 0 !important;
+      font-size: 92% !important;
+    }
+    .reveal code {
+      color: #f8fafc;
+      background: rgba(255, 255, 255, 0.08);
+      padding: 0.15em 0.35em;
+      border-radius: 4px;
+    }
+    .reveal pre {
+      box-shadow: none;
+      background: #0f172a;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .reveal pre code {
+      max-height: 420px;
+      background: transparent;
+      color: #e2e8f0;
+      font-size: 0.72em;
+    }
+
+    .back-link {
+      position: fixed;
+      top: 18px;
+      left: 18px;
+      z-index: 1000;
+      padding: 8px 14px;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      background: rgba(255, 255, 255, 0.08);
+      color: #fff !important;
+      text-decoration: none !important;
+      backdrop-filter: blur(6px);
+      transition: transform 0.2s ease, background 0.2s ease;
+      font-size: 0.8rem;
+    }
+    .back-link:hover {
+      transform: translateX(-2px);
+      background: rgba(255, 255, 255, 0.14);
+    }
+
+    .hero,
+    .glass-card,
+    .forecast-card,
+    .equation-box {
+      background: linear-gradient(145deg, rgba(15, 23, 42, 0.95), rgba(30, 41, 59, 0.82));
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      box-shadow: 0 18px 46px rgba(0, 0, 0, 0.28);
+    }
+
+    .hero {
+      max-width: 920px;
       margin: 0 auto;
-      background: #fff;
-      border: 1px solid #d1d5db;
-      border-radius: 16px;
-      padding: 2rem;
-      box-shadow: 0 10px 30px rgba(17, 24, 39, 0.12);
+      padding: 1.2rem 1.3rem;
+    }
+
+    .pill-row {
+      display: flex;
+      justify-content: center;
+      gap: 0.8rem;
+      flex-wrap: wrap;
+      margin-top: 1rem;
+    }
+
+    .pill {
+      padding: 0.35rem 0.85rem;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      background: rgba(255, 255, 255, 0.06);
+      font-size: 0.55em;
+      color: #fff;
+    }
+
+    .grid-3,
+    .grid-2 {
+      display: grid;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .grid-3 { grid-template-columns: repeat(3, 1fr); }
+    .grid-2 { grid-template-columns: 1.1fr 0.9fr; align-items: start; }
+
+    .glass-card,
+    .forecast-card {
+      padding: 1rem 1.1rem;
+      text-align: left;
+    }
+
+    .glass-card h4,
+    .forecast-card h4 {
+      font-size: 0.86em;
+      margin-bottom: 0.45rem;
+    }
+
+    .glass-card p,
+    .forecast-card p {
+      font-size: 0.66em;
+      line-height: 1.45;
+      margin-bottom: 0;
+    }
+
+    .equation-box {
+      max-width: 760px;
+      margin: 0.9rem auto 0;
+      padding: 0.8rem 1rem;
+      font-size: 0.76em;
+      color: #fff;
+      text-align: center;
+    }
+
+    .equation-box .math {
+      display: block;
+      font-size: 1.15em;
+      line-height: 1.5;
+    }
+
+    .equation-box mjx-container {
+      font-size: 108% !important;
+    }
+
+    .small { font-size: 0.64em; }
+
+    .chart-stage {
+      position: relative;
+      width: 780px;
+      height: 360px;
+      margin: 1rem auto 0;
+      border-radius: 22px;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      background:
+        radial-gradient(circle at 18% 12%, rgba(116, 199, 236, 0.15), transparent 28%),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(2, 6, 23, 0.92)),
+        var(--bg);
+    }
+
+    .chart-stage::before,
+    .chart-stage::after {
+      content: "";
+      position: absolute;
+      background: var(--axis);
+    }
+
+    .chart-stage::before {
+      left: 70px;
+      top: 34px;
+      width: 1px;
+      height: 280px;
+    }
+
+    .chart-stage::after {
+      left: 52px;
+      bottom: 46px;
+      width: 690px;
+      height: 1px;
+    }
+
+    .grid-lines {
+      position: absolute;
+      inset: 32px 38px 44px 68px;
+      background-image:
+        linear-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+      background-size: 100% 56px, 52px 100%;
+      pointer-events: none;
+    }
+
+    .chart-svg {
+      position: absolute;
+      inset: 0;
+    }
+
+    .series-line,
+    .trend-line,
+    .forecast-line,
+    .residual-line,
+    .arma-line,
+    .diff-line,
+    .ma-line {
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-width: 4;
+      stroke-dasharray: 1000;
+      stroke-dashoffset: 1000;
+      animation: draw-line 5s ease forwards infinite;
+    }
+
+    .series-line { stroke: var(--cyan); }
+    .trend-line { stroke: var(--gold); animation-delay: 0.35s; }
+    .forecast-line { stroke: var(--pink); animation-delay: 0.7s; }
+    .residual-line { stroke: var(--mint); animation-delay: 0.25s; }
+    .arma-line { stroke: var(--gold); animation-delay: 0.2s; }
+    .diff-line { stroke: var(--mint); animation-delay: 0.35s; }
+    .ma-line { stroke: var(--pink); animation-delay: 0.5s; }
+
+    .forecast-window {
+      position: absolute;
+      right: 52px;
+      top: 44px;
+      width: 158px;
+      height: 250px;
+      background: linear-gradient(180deg, rgba(255, 143, 171, 0.08), rgba(255, 143, 171, 0.18));
+      border-left: 2px dashed rgba(255, 143, 171, 0.38);
+    }
+
+    .pulse-dot {
+      position: absolute;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: var(--pink);
+      box-shadow: 0 0 0 rgba(255, 143, 171, 0.8);
+      animation: pulse-point 2.4s ease-in-out infinite;
+    }
+
+    .dot-regression {
+      left: 510px;
+      top: 135px;
+      animation-delay: 0.2s;
+    }
+
+    .dot-arima {
+      left: 635px;
+      top: 120px;
+      animation-delay: 0.9s;
+    }
+
+    .legend {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-top: 0.9rem;
+    }
+
+    .legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.56em;
+      color: #fff;
+      padding: 0.35rem 0.65rem;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .legend-swatch {
+      width: 14px;
+      height: 4px;
+      border-radius: 999px;
+    }
+
+    .notes-row {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-top: 1rem;
+    }
+
+    .note {
+      min-width: 210px;
+      padding: 0.7rem 0.85rem;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      font-size: 0.6em;
+      color: var(--text);
+    }
+
+    .note mjx-container {
+      font-size: 88% !important;
+      margin: 0 !important;
+    }
+
+    .bullet-list li {
+      margin-bottom: 0.45rem;
+    }
+
+    .triple-math {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      margin-top: 1rem;
+      align-items: stretch;
+    }
+
+    .math-card {
+      padding: 0.8rem 0.85rem;
+      border-radius: 18px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.05);
+      text-align: left;
+      min-width: 0;
+    }
+
+    .math-card h4 {
+      font-size: 0.76em;
+      margin-bottom: 0.3rem;
+    }
+
+    .math-card p {
+      font-size: 0.58em;
+      line-height: 1.36;
+      margin-bottom: 0.32rem;
+    }
+
+    .math-card code {
+      display: inline-block;
+      margin-top: 0.2rem;
+      font-size: 0.88em;
+    }
+
+    .math-card .math {
+      display: block;
+      margin-top: 0.35rem;
+      font-size: 0.72em;
+      line-height: 1.35;
+      overflow-wrap: anywhere;
+    }
+
+    .math-card mjx-container {
+      font-size: 90% !important;
+      margin: 0.1em 0 0 !important;
+    }
+
+    .math-card .math-inline {
+      display: block;
+      margin-top: 0.35rem;
+      font-size: 0.66em;
+      line-height: 1.25;
+      white-space: normal;
+      overflow-wrap: anywhere;
+      color: #f8fafc;
+      font-family: "Times New Roman", serif;
+      font-style: italic;
+    }
+
+    .wide-split {
+      grid-template-columns: 1fr 1fr;
+      gap: 1.25rem;
+    }
+
+    .stack-split {
+      grid-template-columns: 1fr;
+      gap: 0.9rem;
+    }
+
+    .compact-card {
+      padding: 0.85rem 0.95rem;
+    }
+
+    .compact-card p {
+      font-size: 0.6em;
+      line-height: 1.34;
+      margin-bottom: 0.38rem;
+    }
+
+    .mini-notes {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.7rem;
+      margin-top: 0.9rem;
+    }
+
+    .mini-note {
+      padding: 0.55rem 0.65rem;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      font-size: 0.52em;
+      color: var(--text);
+      text-align: center;
+    }
+
+    .formula-lite {
+      font-family: "Times New Roman", serif;
+      font-style: italic;
+      color: #f8fafc;
+      letter-spacing: 0.01em;
+    }
+
+    @keyframes draw-line {
+      0%, 12% { stroke-dashoffset: 1000; opacity: 0.25; }
+      35%, 100% { stroke-dashoffset: 0; opacity: 1; }
+    }
+
+    @keyframes pulse-point {
+      0%, 100% { transform: scale(0.9); box-shadow: 0 0 0 0 rgba(255, 143, 171, 0.5); }
+      50% { transform: scale(1.15); box-shadow: 0 0 0 14px rgba(255, 143, 171, 0); }
+    }
+
+    @media (max-width: 900px) {
+      .chart-stage {
+        width: 100%;
+        max-width: 780px;
+        height: 300px;
+      }
+
+      .grid-3,
+      .grid-2,
+      .triple-math,
+      .mini-notes {
+        grid-template-columns: 1fr;
+      }
+
+      .back-link {
+        top: 12px;
+        left: 12px;
+        font-size: 0.72rem;
+      }
     }
   </style>
 </head>
 <body>
-  <main class="container py-5">
-    <a href="./main.html" class="btn btn-dark mb-4">Voltar para lives</a>
-    <section class="slide-placeholder">
-      <h1 class="h3 fw-bold mb-3">Estrutura de Slides (Placeholder)</h1>
-      <p class="mb-0">Substituir este conteúdo quando você enviar o material da live.</p>
-    </section>
-  </main>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+  <a href="./main.html" class="back-link">Voltar ao Menu</a>
+
+  <div class="reveal">
+    <div class="slides">
+      <section>
+        <div class="hero">
+          <h1>Estatistica, Probabilidade e Previsao</h1>
+          <h3>Regressao e ARIMA para tentar prever o futuro</h3>
+          <p class="small">Live 3 · Applied Math for Data Science</p>
+          <div class="pill-row">
+            <span class="pill">Series temporais</span>
+            <span class="pill">Regressao linear</span>
+            <span class="pill">ARIMA</span>
+            <span class="pill">Graficos lineares</span>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2>O que significa prever?</h2>
+        <div class="grid-3">
+          <div class="glass-card">
+            <h4>Estatistica</h4>
+            <p>Resume o passado: media, variancia, tendencia, sazonalidade e ruido. Sem isso, previsao vira chute.</p>
+          </div>
+          <div class="glass-card">
+            <h4>Probabilidade</h4>
+            <p>Reconhece incerteza. Prever nao e adivinhar um unico numero, e estimar faixas plausiveis.</p>
+          </div>
+          <div class="glass-card">
+            <h4>Modelagem</h4>
+            <p>Transforma padroes observados em regras para extrapolar o comportamento futuro da serie.</p>
+          </div>
+        </div>
+        <div class="equation-box">
+          Previsao boa = tendencia + padrao repetitivo + tratamento do erro aleatorio.
+        </div>
+      </section>
+
+      <section>
+        <h2>Visualizando uma serie temporal</h2>
+        <p class="small">A linha azul representa o historico. A amarela captura tendencia global. A rosa indica a regiao de previsao.</p>
+        <div class="chart-stage">
+          <div class="grid-lines"></div>
+          <div class="forecast-window"></div>
+          <svg class="chart-svg" viewBox="0 0 780 360" aria-hidden="true">
+            <path class="series-line" d="M82 250 C112 220, 130 206, 156 210 C180 214, 208 246, 236 228 C264 210, 288 155, 318 146 C350 136, 372 164, 400 154 C428 144, 454 102, 482 96 C514 90, 540 124, 568 118 C596 112, 620 86, 646 78" />
+            <path class="trend-line" d="M82 246 C178 214, 280 186, 388 154 C490 126, 584 102, 646 84" />
+            <path class="forecast-line" d="M646 78 C674 72, 700 70, 726 62" />
+          </svg>
+          <div class="pulse-dot dot-regression"></div>
+          <div class="pulse-dot dot-arima"></div>
+        </div>
+        <div class="legend">
+          <span class="legend-item"><span class="legend-swatch" style="background: var(--cyan);"></span> Historico observado</span>
+          <span class="legend-item"><span class="legend-swatch" style="background: var(--gold);"></span> Tendencia por regressao</span>
+          <span class="legend-item"><span class="legend-swatch" style="background: var(--pink);"></span> Projecao futura</span>
+        </div>
+      </section>
+
+      <section>
+        <h2>Regressao linear para previsao</h2>
+        <div class="grid-2">
+          <div class="forecast-card">
+            <h4>Ideia central</h4>
+            <p>Se o tempo for a variavel de entrada, a regressao tenta ajustar uma reta que explique o crescimento ou queda da serie. E simples, rapida e muito util quando a tendencia domina.</p>
+            <div class="equation-box">
+              <span class="math">$$y_t = \beta_0 + \beta_1 t + \varepsilon_t$$</span>
+            </div>
+          </div>
+          <div class="forecast-card">
+            <h4>Quando funciona bem</h4>
+            <p>Quando a serie tem direcao clara e pouca memoria curta. Exemplo: crescimento de usuarios, faturamento estavel ou demanda com subida quase linear.</p>
+          </div>
+        </div>
+        <div class="notes-row">
+          <div class="note">Vantagem: interpretavel e facil de implementar.</div>
+          <div class="note">Limite: sofre quando a serie depende fortemente do proprio passado.</div>
+        </div>
+      </section>
+
+      <section>
+        <h2>Antes do ARIMA: o que e um ARMA?</h2>
+        <div class="grid-2">
+          <div>
+            <ul class="bullet-list">
+              <li><strong>AR:</strong> usa valores passados da propria serie.</li>
+              <li><strong>MA:</strong> usa comportamento dos erros passados.</li>
+              <li><strong>ARMA:</strong> combina memoria da serie com memoria do ruido.</li>
+            </ul>
+            <div class="equation-box">
+              <span class="math">$$ARMA(p,q) = AR(p) + MA(q)$$</span>
+            </div>
+          </div>
+          <div class="forecast-card">
+            <h4>Leitura pratica</h4>
+            <p>ARMA funciona bem quando a serie ja esta em um nivel relativamente estavel. Ele tenta explicar o presente olhando para observacoes passadas e para erros passados.</p>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2>Destrinchando o AR e o MA</h2>
+        <div class="triple-math">
+          <div class="math-card">
+            <h4>Parte AR</h4>
+            <p>O valor atual depende de valores passados da propria serie.</p>
+            <p><strong>Exemplo:</strong> vendas deste mes seguem o ritmo dos meses anteriores.</p>
+            <span class="math-inline">y<sub>t</sub> = c + φ<sub>1</sub>y<sub>t-1</sub> + ε<sub>t</sub></span>
+          </div>
+          <div class="math-card">
+            <h4>Parte MA</h4>
+            <p>O valor atual tambem depende de erros recentes que o modelo cometeu.</p>
+            <p><strong>Exemplo:</strong> se ontem o modelo subestimou muito, hoje ele corrige parte disso.</p>
+            <span class="math-inline">y<sub>t</sub> = c + ε<sub>t</sub> + θ<sub>1</sub>ε<sub>t-1</sub></span>
+          </div>
+          <div class="math-card">
+            <h4>Intuicao</h4>
+            <p>AR olha para a serie. MA olha para os residuos.</p>
+            <p><strong>Exemplo:</strong> demanda de energia depende do historico recente e dos desvios inesperados dos ultimos dias.</p>
+            <span class="math-inline">ARMA = sinal + erro</span>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2>O que o I faz no ARIMA?</h2>
+        <p class="small">O I vem de Integrated. Na pratica, ele diferencia a serie para remover tendencia e aproximar a serie de um comportamento mais estavel.</p>
+        <div class="chart-stage">
+          <div class="grid-lines"></div>
+          <svg class="chart-svg" viewBox="0 0 780 360" aria-hidden="true">
+            <path class="series-line" d="M84 248 C126 230, 168 212, 210 206 C254 200, 294 182, 334 168 C382 152, 424 145, 470 128 C520 112, 572 105, 646 82" />
+            <path class="diff-line" d="M84 198 C126 162, 168 224, 210 184 C254 210, 294 150, 334 194 C382 158, 424 206, 470 170 C520 195, 572 156, 646 176" />
+          </svg>
+        </div>
+        <div class="notes-row">
+          <div class="note">Serie original: sobe ao longo do tempo.</div>
+          <div class="note">Serie diferenciada: vira variacao entre pontos consecutivos.</div>
+          <div class="note"><span class="formula-lite">y′<sub>t</sub> = y<sub>t</sub> - y<sub>t-1</sub></span></div>
+        </div>
+      </section>
+
+      <section>
+        <h2>Matematica do I, passo a passo</h2>
+        <div class="grid-2">
+          <div class="forecast-card">
+            <h4>Primeira diferenca</h4>
+            <p>Se a serie tem tendencia, subtrair o valor anterior destaca apenas a variacao local. Isso ajuda o modelo a parar de perseguir um crescimento bruto e passar a modelar mudancas.</p>
+            <div class="equation-box">
+              <span class="math">$$\Delta y_t = y_t - y_{t-1}$$</span>
+            </div>
+          </div>
+          <div class="forecast-card">
+            <h4>Segunda diferenca</h4>
+            <p>Se ainda sobra tendencia na diferenca, podemos diferenciar de novo. Foi isso que usamos no exemplo com <code>d = 2</code>.</p>
+            <div class="equation-box">
+              <span class="math">$$\Delta^2 y_t = (y_t - y_{t-1}) - (y_{t-1} - y_{t-2})$$</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2>Como o MA funciona?</h2>
+        <p class="small">A parte MA nao faz media movel dos dados crus. Ela modela a influencia dos erros passados no valor atual.</p>
+        <div class="chart-stage">
+          <div class="grid-lines"></div>
+          <svg class="chart-svg" viewBox="0 0 780 360" aria-hidden="true">
+            <path class="residual-line" d="M86 166 C116 134, 148 220, 180 154 C212 232, 246 142, 282 202 C318 148, 350 214, 388 170 C426 224, 470 140, 510 194 C548 148, 590 206, 646 164" />
+            <path class="ma-line" d="M86 176 C116 164, 148 180, 180 174 C212 188, 246 170, 282 178 C318 168, 350 184, 388 176 C426 188, 470 170, 510 180 C548 170, 590 182, 646 174" />
+          </svg>
+        </div>
+        <div class="notes-row">
+          <div class="note">Linha verde: erros brutos oscilando.</div>
+          <div class="note">Linha rosa: efeito combinado dos erros recentes no instante atual.</div>
+          <div class="note"><span class="formula-lite">y<sub>t</sub> = ... + ε<sub>t</sub> + θ<sub>1</sub>ε<sub>t-1</sub> + θ<sub>2</sub>ε<sub>t-2</sub></span></div>
+        </div>
+      </section>
+
+      <section>
+        <h2>Agora sim: o que e ARIMA?</h2>
+        <div class="grid-2 stack-split">
+          <div>
+            <ul class="bullet-list">
+              <li><strong>AR:</strong> memoria dos valores passados.</li>
+              <li><strong>I:</strong> diferencas para estabilizar a serie.</li>
+              <li><strong>MA:</strong> memoria dos erros passados.</li>
+            </ul>
+            <div class="equation-box">
+              <span class="math">$$ARIMA(p,d,q) = ARMA(p,q)\ \text{sobre}\ \Delta^d y_t$$</span>
+            </div>
+          </div>
+          <div class="forecast-card compact-card">
+            <h4>Leitura pratica</h4>
+            <p>Primeiro aplicamos o <code>I</code> para transformar a serie em variacoes mais estaveis. Depois usamos <code>AR</code> para olhar o historico e <code>MA</code> para corrigir usando erros recentes.</p>
+            <p><strong>Exemplo:</strong> em vendas mensais, removemos a tendencia de crescimento e modelamos apenas as oscilacoes restantes.</p>
+          </div>
+        </div>
+        <div class="mini-notes">
+          <div class="mini-note">Se <code>d = 0</code>, nao diferenciamos.</div>
+          <div class="mini-note">Se <code>d = 1</code>, usamos a primeira diferenca.</div>
+          <div class="mini-note">Se <code>d = 2</code>, diferenciamos duas vezes.</div>
+        </div>
+      </section>
+
+      <section>
+        <h2>Probabilidade entra onde?</h2>
+        <div class="grid-3">
+          <div class="glass-card">
+            <h4>Ruido</h4>
+            <p>Mesmo com bom modelo, sempre sobra erro aleatorio. Isso faz parte da serie, nao e defeito do grafico.</p>
+          </div>
+          <div class="glass-card">
+            <h4>Intervalo de confianca</h4>
+            <p>O futuro vem em faixa: previsao central mais margem de incerteza, que aumenta quanto mais longe vamos.</p>
+          </div>
+          <div class="glass-card">
+            <h4>Risco</h4>
+            <p>Tomada de decisao usa chance: demanda acima do esperado, queda de receita, pico de trafego ou falha operacional.</p>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2>Regressao vs ARIMA</h2>
+        <div class="grid-2">
+          <div class="forecast-card">
+            <h4>Regressao</h4>
+            <p>Capta tendencia global. Boa para explicar crescimento medio ao longo do tempo. Menos sensivel a oscilacoes locais.</p>
+          </div>
+          <div class="forecast-card">
+            <h4>ARIMA</h4>
+            <p>Capta estrutura temporal e dependencia serial. Melhor quando o historico recente carrega informacao importante.</p>
+          </div>
+        </div>
+        <div class="equation-box">
+          Em muitos projetos reais, os dois entram juntos: regressao para explicar e ARIMA para ajustar dinamica temporal.
+        </div>
+      </section>
+
+      <section>
+        <h2>Case da aula</h2>
+        <div class="grid-2">
+          <div>
+            <ul class="bullet-list">
+              <li>Serie mensal de usuarios ativos de uma plataforma de IA.</li>
+              <li>Tendencia de crescimento + sazonalidade + ruido.</li>
+              <li>Comparacao entre previsao por regressao linear e ARIMA.</li>
+              <li>Graficos lineares para leitura de historico, ajuste e horizonte futuro.</li>
+            </ul>
+          </div>
+          <div class="forecast-card">
+            <h4>No notebook</h4>
+            <p>O arquivo <code>live-3.ipynb</code> gera a serie, separa treino e teste, treina os dois modelos e compara as previsoes com erro absoluto medio.</p>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2>Resumo</h2>
+        <div class="grid-3">
+          <div class="glass-card">
+            <h4>Estatistica</h4>
+            <p>Ajuda a enxergar estrutura: media, dispersao, tendencia e comportamento residual.</p>
+          </div>
+          <div class="glass-card">
+            <h4>Probabilidade</h4>
+            <p>Transforma previsao em analise de risco, nao em adivinhacao absoluta.</p>
+          </div>
+          <div class="glass-card">
+            <h4>Series temporais</h4>
+            <p>Regressao e ARIMA sao duas portas de entrada fortes para prever variaveis ao longo do tempo.</p>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/plugin/math/math.js"></script>
+  <script>
+    Reveal.initialize({
+      hash: true,
+      slideNumber: true,
+      transition: 'slide',
+      plugins: [ RevealMath.MathJax3 ],
+      mathjax3: {
+        mathjax: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js',
+        tex: {
+          inlineMath: [['$', '$'], ['\\\\(', '\\\\)']]
+        }
+      }
+    });
+  </script>
 </body>
 </html>

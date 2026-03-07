@@ -81,9 +81,29 @@
     .reveal a:hover {
       color: #ffffff;
     }
+    .back-link {
+      position: fixed;
+      top: 18px;
+      left: 18px;
+      z-index: 1000;
+      padding: 8px 14px;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      background: rgba(255, 255, 255, 0.08);
+      color: #fff !important;
+      text-decoration: none !important;
+      backdrop-filter: blur(6px);
+      transition: transform 0.2s ease, background 0.2s ease;
+      font-size: 0.8rem;
+    }
+    .back-link:hover {
+      transform: translateX(-2px);
+      background: rgba(255, 255, 255, 0.14);
+    }
   </style>
 </head>
 <body>
+  <a href="./main.html" class="back-link">Voltar ao Menu</a>
   <div class="reveal">
     <div class="slides">
 

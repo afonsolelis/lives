@@ -3,34 +3,447 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Placeholder de Slides</title>
+  <title>Live 4 - Simulacao e Modelagem Matematica</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/theme/black.css">
   <style>
-    body {
-      min-height: 100vh;
-      background: linear-gradient(135deg, #e5e7eb, #d1d5db);
-      color: #111827;
+    :root {
+      --bg: #07131f;
+      --panel: rgba(15, 23, 42, 0.9);
+      --border: rgba(255, 255, 255, 0.1);
+      --text: #edf2ff;
+      --muted: #c8d2e4;
+      --cyan: #7bdff2;
+      --mint: #90f1b8;
+      --gold: #ffd166;
+      --coral: #ff8c69;
+      --pink: #ff70a6;
+      --axis: rgba(255, 255, 255, 0.2);
     }
 
-    .slide-placeholder {
-      max-width: 900px;
+    .reveal { color: var(--text); }
+    .reveal h1, .reveal h2, .reveal h3, .reveal h4 {
+      text-transform: none;
+      color: #fff;
+    }
+    .reveal h1 { font-size: 1.85em; }
+    .reveal h2 { font-size: 1.42em; }
+    .reveal p, .reveal li { color: var(--muted); font-size: 0.88em; }
+    .reveal strong, .reveal b { color: #fff; }
+    .reveal code {
+      color: #f8fafc;
+      background: rgba(255, 255, 255, 0.08);
+      padding: 0.15em 0.35em;
+      border-radius: 4px;
+    }
+    .reveal pre {
+      box-shadow: none;
+      background: #0f172a;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .reveal pre code {
+      max-height: 420px;
+      background: transparent;
+      color: #e2e8f0;
+      font-size: 0.72em;
+    }
+
+    .back-link {
+      position: fixed;
+      top: 18px;
+      left: 18px;
+      z-index: 1000;
+      padding: 8px 14px;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      background: rgba(255, 255, 255, 0.08);
+      color: #fff !important;
+      text-decoration: none !important;
+      backdrop-filter: blur(6px);
+      transition: transform 0.2s ease, background 0.2s ease;
+      font-size: 0.8rem;
+    }
+    .back-link:hover {
+      transform: translateX(-2px);
+      background: rgba(255, 255, 255, 0.14);
+    }
+
+    .hero, .glass-card, .case-card, .equation-box {
+      background: linear-gradient(145deg, rgba(15, 23, 42, 0.95), rgba(30, 41, 59, 0.82));
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      box-shadow: 0 18px 46px rgba(0, 0, 0, 0.28);
+    }
+
+    .hero {
+      max-width: 920px;
       margin: 0 auto;
-      background: #fff;
-      border: 1px solid #d1d5db;
+      padding: 1.15rem 1.25rem;
+    }
+
+    .pill-row {
+      display: flex;
+      justify-content: center;
+      gap: 0.8rem;
+      flex-wrap: wrap;
+      margin-top: 1rem;
+    }
+
+    .pill {
+      padding: 0.35rem 0.85rem;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      background: rgba(255, 255, 255, 0.06);
+      font-size: 0.55em;
+      color: #fff;
+    }
+
+    .grid-3, .grid-2 {
+      display: grid;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+    .grid-3 { grid-template-columns: repeat(3, 1fr); }
+    .grid-2 { grid-template-columns: 1.05fr 0.95fr; align-items: start; }
+
+    .glass-card, .case-card {
+      padding: 1rem 1.05rem;
+      text-align: left;
+    }
+    .glass-card h4, .case-card h4 {
+      font-size: 0.84em;
+      margin-bottom: 0.4rem;
+    }
+    .glass-card p, .case-card p {
+      font-size: 0.64em;
+      line-height: 1.42;
+      margin-bottom: 0;
+    }
+
+    .equation-box {
+      max-width: 760px;
+      margin: 0.9rem auto 0;
+      padding: 0.75rem 0.95rem;
+      font-size: 0.76em;
+      color: #fff;
+      text-align: center;
+    }
+
+    .small { font-size: 0.64em; }
+
+    .sim-stage {
+      position: relative;
+      width: 780px;
+      height: 360px;
+      margin: 1rem auto 0;
+      border-radius: 22px;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      background:
+        radial-gradient(circle at 18% 12%, rgba(123, 223, 242, 0.14), transparent 28%),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(2, 6, 23, 0.92)),
+        var(--bg);
+    }
+
+    .sim-stage::before,
+    .sim-stage::after {
+      content: "";
+      position: absolute;
+      background: var(--axis);
+    }
+    .sim-stage::before {
+      left: 72px;
+      top: 32px;
+      width: 1px;
+      height: 284px;
+    }
+    .sim-stage::after {
+      left: 52px;
+      bottom: 44px;
+      width: 696px;
+      height: 1px;
+    }
+
+    .sim-grid {
+      position: absolute;
+      inset: 30px 34px 42px 70px;
+      background-image:
+        linear-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+      background-size: 100% 52px, 52px 100%;
+      pointer-events: none;
+    }
+
+    .sim-svg {
+      position: absolute;
+      inset: 0;
+    }
+
+    .curve, .curve-2, .curve-3, .curve-avg, .curve-threshold {
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-width: 4;
+      stroke-dasharray: 1000;
+      stroke-dashoffset: 1000;
+      animation: draw-line 4.8s ease forwards infinite;
+    }
+
+    .curve { stroke: var(--cyan); }
+    .curve-2 { stroke: var(--gold); animation-delay: 0.35s; }
+    .curve-3 { stroke: var(--coral); animation-delay: 0.7s; }
+    .curve-avg { stroke: var(--mint); animation-delay: 1s; }
+    .curve-threshold { stroke: var(--pink); stroke-dasharray: 8 10; stroke-dashoffset: 0; animation: none; }
+
+    .floating-chip {
+      position: absolute;
+      padding: 0.35rem 0.65rem;
+      font-size: 0.54em;
+      color: #fff;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(4px);
+    }
+
+    .chip-a { left: 120px; top: 58px; }
+    .chip-b { left: 536px; top: 86px; }
+    .chip-c { left: 554px; top: 250px; }
+
+    .notes-row {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-top: 1rem;
+    }
+
+    .note {
+      min-width: 210px;
+      padding: 0.7rem 0.85rem;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      font-size: 0.6em;
+      color: var(--text);
+    }
+
+    .math-flow {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.8rem;
+      margin-top: 1rem;
+    }
+
+    .flow-card {
+      padding: 0.8rem 0.85rem;
       border-radius: 16px;
-      padding: 2rem;
-      box-shadow: 0 10px 30px rgba(17, 24, 39, 0.12);
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      text-align: left;
+    }
+    .flow-card h4 {
+      font-size: 0.74em;
+      margin-bottom: 0.25rem;
+    }
+    .flow-card p {
+      font-size: 0.56em;
+      line-height: 1.35;
+      margin-bottom: 0;
+    }
+
+    .bullet-list li {
+      margin-bottom: 0.45rem;
+    }
+
+    @keyframes draw-line {
+      0%, 12% { stroke-dashoffset: 1000; opacity: 0.25; }
+      35%, 100% { stroke-dashoffset: 0; opacity: 1; }
+    }
+
+    @media (max-width: 900px) {
+      .sim-stage {
+        width: 100%;
+        max-width: 780px;
+        height: 300px;
+      }
+      .grid-3, .grid-2, .math-flow {
+        grid-template-columns: 1fr;
+      }
+      .back-link {
+        top: 12px;
+        left: 12px;
+        font-size: 0.72rem;
+      }
     }
   </style>
 </head>
 <body>
-  <main class="container py-5">
-    <a href="./main.html" class="btn btn-dark mb-4">Voltar para lives</a>
-    <section class="slide-placeholder">
-      <h1 class="h3 fw-bold mb-3">Estrutura de Slides (Placeholder)</h1>
-      <p class="mb-0">Substituir este conteúdo quando você enviar o material da live.</p>
-    </section>
-  </main>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+  <a href="./main.html" class="back-link">Voltar ao Menu</a>
+
+  <div class="reveal">
+    <div class="slides">
+      <section>
+        <div class="hero">
+          <h1>Simulacao e Modelagem Matematica</h1>
+          <h3>Como transformar problemas reais em modelos que podemos testar</h3>
+          <p class="small">Live 4 · Applied Math for Data Science</p>
+          <div class="pill-row">
+            <span class="pill">Variaveis</span>
+            <span class="pill">Hipoteses</span>
+            <span class="pill">Equacoes</span>
+            <span class="pill">Simulacao</span>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2>O que e modelar um problema?</h2>
+        <div class="grid-3">
+          <div class="glass-card">
+            <h4>Abstracao</h4>
+            <p>Escolhemos o que importa no problema e ignoramos detalhes secundarios para tornar a analise viavel.</p>
+          </div>
+          <div class="glass-card">
+            <h4>Relacoes</h4>
+            <p>Traduzimos causas e efeitos em variaveis, parametros e equacoes ou regras computacionais.</p>
+          </div>
+          <div class="glass-card">
+            <h4>Teste</h4>
+            <p>Rodamos cenarios para ver como o sistema reage antes de aplicar isso no mundo real.</p>
+          </div>
+        </div>
+        <div class="equation-box">
+          Modelar = representar um sistema real de forma simples o suficiente para estudar e rica o suficiente para ser util.
+        </div>
+      </section>
+
+      <section>
+        <h2>Simulacao: testar sem quebrar o sistema real</h2>
+        <p class="small">Cada linha representa um possivel comportamento do sistema. A linha verde resume a media das simulacoes.</p>
+        <div class="sim-stage">
+          <div class="sim-grid"></div>
+          <svg class="sim-svg" viewBox="0 0 780 360" aria-hidden="true">
+            <path class="curve" d="M86 248 C124 232, 156 210, 188 214 C218 218, 250 190, 282 168 C316 146, 346 164, 378 150 C414 134, 446 116, 480 112 C516 108, 558 94, 642 74" />
+            <path class="curve-2" d="M86 250 C122 242, 154 236, 190 212 C222 190, 252 174, 286 178 C324 182, 356 142, 390 126 C426 110, 458 120, 492 104 C528 88, 566 84, 642 86" />
+            <path class="curve-3" d="M86 252 C124 244, 158 226, 192 236 C226 246, 258 220, 290 198 C326 174, 356 186, 390 178 C426 170, 458 156, 492 138 C530 118, 570 124, 642 98" />
+            <path class="curve-avg" d="M86 250 C124 240, 156 224, 190 220 C224 216, 256 194, 288 182 C324 168, 356 164, 390 152 C426 140, 458 128, 492 118 C530 104, 568 100, 642 86" />
+            <path class="curve-threshold" d="M82 132 L646 132" />
+          </svg>
+          <div class="floating-chip chip-a">cenario otimista</div>
+          <div class="floating-chip chip-b">media simulada</div>
+          <div class="floating-chip chip-c">limite critico</div>
+        </div>
+        <div class="notes-row">
+          <div class="note">Simular ajuda a comparar cenarios antes de tomar decisao.</div>
+          <div class="note">Nao buscamos uma unica resposta, mas uma distribuicao de possiveis resultados.</div>
+          <div class="note">Isso e muito usado em operacoes, IA, logistica e financas.</div>
+        </div>
+      </section>
+
+      <section>
+        <h2>Passos da modelagem matematica</h2>
+        <div class="math-flow">
+          <div class="flow-card">
+            <h4>1. Definir objetivo</h4>
+            <p>O que queremos prever, otimizar ou entender?</p>
+          </div>
+          <div class="flow-card">
+            <h4>2. Escolher variaveis</h4>
+            <p>Quais grandezas mudam no tempo e quais sao fixas?</p>
+          </div>
+          <div class="flow-card">
+            <h4>3. Escrever regras</h4>
+            <p>Transformar intuicao em equacoes, probabilidades ou algoritmos.</p>
+          </div>
+          <div class="flow-card">
+            <h4>4. Validar</h4>
+            <p>Comparar o modelo com dados ou cenarios plausiveis.</p>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2>Exemplo: fila de atendimento</h2>
+        <div class="grid-2">
+          <div class="case-card">
+            <h4>Problema real</h4>
+            <p>Uma plataforma de IA recebe requisicoes ao longo do dia. Se a taxa de chegada superar a taxa de atendimento, forma-se fila, aumenta a latencia e surgem falhas.</p>
+            <div class="equation-box">
+              Se chegada &gt; atendimento, a fila cresce.
+            </div>
+          </div>
+          <div class="case-card">
+            <h4>Modelagem</h4>
+            <p>Podemos representar chegadas por sorteios probabilisticos e o processamento por uma capacidade fixa ou variavel. A simulacao mostra como a fila evolui no tempo.</p>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2>Onde entra a matematica?</h2>
+        <div class="grid-3">
+          <div class="glass-card">
+            <h4>Equacoes de atualizacao</h4>
+            <p>Descrevem como o estado muda: estoque, populacao, fila, temperatura, demanda.</p>
+          </div>
+          <div class="glass-card">
+            <h4>Probabilidade</h4>
+            <p>Modela incerteza: atrasos, falhas, chegadas aleatorias, ruido de sensores e comportamento humano.</p>
+          </div>
+          <div class="glass-card">
+            <h4>Estatistica</h4>
+            <p>Resume os resultados da simulacao: media, percentis, risco de colapso e variabilidade.</p>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2>Case da aula</h2>
+        <div class="grid-2">
+          <div>
+            <ul class="bullet-list">
+              <li>Simulacao de uma fila de inferencia para uma API de IA.</li>
+              <li>Chegadas aleatorias de requisicoes ao longo do tempo.</li>
+              <li>Capacidade limitada de processamento por minuto.</li>
+              <li>Comparacao de cenarios com carga baixa, media e alta.</li>
+            </ul>
+          </div>
+          <div class="case-card">
+            <h4>No notebook</h4>
+            <p>O arquivo <code>live-4.ipynb</code> modela a fila, executa multiplas simulacoes e mostra graficos de tamanho de fila, tempo de espera e risco de saturacao.</p>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2>O que aprendemos?</h2>
+        <div class="grid-3">
+          <div class="glass-card">
+            <h4>Modelagem</h4>
+            <p>Organiza o problema em variaveis, parametros e regras de evolucao.</p>
+          </div>
+          <div class="glass-card">
+            <h4>Simulacao</h4>
+            <p>Permite testar cenarios sem custo real, sem risco operacional e com rapidez.</p>
+          </div>
+          <div class="glass-card">
+            <h4>Aplicacao</h4>
+            <p>Ajuda a tomar decisoes melhores em sistemas com incerteza, capacidade limitada e comportamentos dinamicos.</p>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.js"></script>
+  <script>
+    Reveal.initialize({
+      hash: true,
+      slideNumber: true,
+      transition: 'slide'
+    });
+  </script>
 </body>
 </html>

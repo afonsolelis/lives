@@ -3,34 +3,459 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Placeholder de Slides</title>
+  <title>Live 3 - Ordenacao e Busca</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/theme/black.css">
   <style>
-    body {
-      min-height: 100vh;
-      background: linear-gradient(135deg, #e5e7eb, #d1d5db);
-      color: #111827;
+    :root {
+      --text: #edf2ff;
+      --muted: #c9d2df;
+      --card: rgba(255, 255, 255, 0.06);
+      --line: rgba(255, 255, 255, 0.14);
+      --cyan: #7bdff2;
+      --mint: #90f1b8;
+      --gold: #ffd166;
+      --pink: #ff70a6;
+      --coral: #ff9770;
     }
 
-    .slide-placeholder {
-      max-width: 900px;
+    .reveal { color: var(--text); }
+    .reveal h1, .reveal h2, .reveal h3, .reveal h4 {
+      text-transform: none;
+      color: #fff;
+    }
+    .reveal h1 { font-size: 1.85em; }
+    .reveal h2 { font-size: 1.45em; }
+    .reveal p, .reveal li, .reveal td, .reveal th {
+      color: var(--muted);
+      font-size: 0.88em;
+    }
+    .reveal strong, .reveal b { color: #fff; }
+    .reveal pre {
+      box-shadow: none;
+      background: #0f172a;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .reveal pre code {
+      max-height: 420px;
+      font-size: 0.72em;
+      color: #e2e8f0;
+      background: transparent;
+    }
+    .reveal code {
+      color: #f8fafc;
+      background: rgba(255, 255, 255, 0.08);
+      padding: 0.15em 0.35em;
+      border-radius: 4px;
+    }
+    .reveal table { font-size: 0.68em; }
+
+    .hero-box, .glass-card, .equation-box {
+      background: linear-gradient(145deg, rgba(15, 23, 42, 0.95), rgba(30, 41, 59, 0.82));
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 18px;
+      box-shadow: 0 18px 46px rgba(0, 0, 0, 0.28);
+    }
+
+    .hero-box {
+      max-width: 920px;
       margin: 0 auto;
-      background: #fff;
-      border: 1px solid #d1d5db;
+      padding: 1.1rem 1.2rem;
+    }
+
+    .pill-row {
+      display: flex;
+      justify-content: center;
+      gap: 0.8rem;
+      flex-wrap: wrap;
+      margin-top: 1rem;
+    }
+
+    .pill {
+      padding: 0.35rem 0.85rem;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      background: rgba(255, 255, 255, 0.06);
+      color: #fff;
+      font-size: 0.55em;
+    }
+
+    .grid-2, .grid-3 {
+      display: grid;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+    .grid-2 { grid-template-columns: 1.05fr 0.95fr; }
+    .grid-3 { grid-template-columns: repeat(3, 1fr); }
+
+    .glass-card {
+      padding: 0.95rem 1rem;
+      text-align: left;
+    }
+    .glass-card h4 {
+      font-size: 0.82em;
+      margin-bottom: 0.35rem;
+    }
+    .glass-card p {
+      font-size: 0.63em;
+      line-height: 1.42;
+      margin-bottom: 0;
+    }
+
+    .equation-box {
+      max-width: 760px;
+      margin: 0.85rem auto 0;
+      padding: 0.75rem 0.95rem;
+      text-align: center;
+      color: #fff;
+      font-size: 0.76em;
+    }
+
+    .search-stage {
+      position: relative;
+      width: 820px;
+      height: 360px;
+      margin: 1rem auto 0;
+      border-radius: 22px;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      background:
+        radial-gradient(circle at 18% 12%, rgba(123, 223, 242, 0.12), transparent 28%),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(2, 6, 23, 0.94)),
+        #07111f;
+    }
+
+    .search-panel {
+      position: absolute;
       border-radius: 16px;
-      padding: 2rem;
-      box-shadow: 0 10px 30px rgba(17, 24, 39, 0.12);
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 0.8rem 0.9rem;
+      color: #fff;
+      text-align: left;
+    }
+
+    .panel-query { left: 42px; top: 40px; width: 220px; }
+    .panel-index { left: 300px; top: 34px; width: 220px; height: 270px; }
+    .panel-results { right: 42px; top: 68px; width: 210px; }
+
+    .search-panel h4 {
+      font-size: 0.7em;
+      margin-bottom: 0.35rem;
+    }
+    .search-panel p, .search-panel li {
+      font-size: 0.56em;
+      line-height: 1.35;
+      margin-bottom: 0.25rem;
+      color: var(--muted);
+    }
+
+    .arrow-line {
+      position: absolute;
+      height: 3px;
+      background: linear-gradient(90deg, var(--cyan), var(--gold));
+      border-radius: 999px;
+    }
+
+    .arrow-a { left: 250px; top: 140px; width: 70px; }
+    .arrow-b { left: 520px; top: 168px; width: 86px; }
+
+    .arrow-line::after {
+      content: "";
+      position: absolute;
+      right: -2px;
+      top: -4px;
+      border-top: 6px solid transparent;
+      border-bottom: 6px solid transparent;
+      border-left: 10px solid var(--gold);
+    }
+
+    .notes-row {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-top: 1rem;
+    }
+
+    .note {
+      min-width: 210px;
+      padding: 0.7rem 0.85rem;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      font-size: 0.6em;
+      color: var(--text);
+    }
+
+    .steps-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.8rem;
+      margin-top: 1rem;
+    }
+
+    .step-card {
+      padding: 0.8rem 0.85rem;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      text-align: left;
+    }
+    .step-card h4 {
+      font-size: 0.74em;
+      margin-bottom: 0.25rem;
+    }
+    .step-card p {
+      font-size: 0.56em;
+      line-height: 1.34;
+      margin-bottom: 0;
+    }
+
+    .small { font-size: 0.64em; }
+
+    @media (max-width: 900px) {
+      .search-stage {
+        width: 100%;
+        max-width: 820px;
+        height: 420px;
+      }
+      .grid-2, .grid-3, .steps-grid {
+        grid-template-columns: 1fr;
+      }
+      .panel-query, .panel-index, .panel-results {
+        position: static;
+        width: auto;
+        height: auto;
+        margin: 0.8rem;
+      }
+      .arrow-line { display: none; }
+    }
+    .back-link {
+      position: fixed;
+      top: 18px;
+      left: 18px;
+      z-index: 1000;
+      padding: 8px 14px;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      background: rgba(255, 255, 255, 0.08);
+      color: #fff !important;
+      text-decoration: none !important;
+      backdrop-filter: blur(6px);
+      transition: transform 0.2s ease, background 0.2s ease;
+      font-size: 0.8rem;
+    }
+    .back-link:hover {
+      transform: translateX(-2px);
+      background: rgba(255, 255, 255, 0.14);
     }
   </style>
 </head>
 <body>
-  <main class="container py-5">
-    <a href="./main.html" class="btn btn-dark mb-4">Voltar para lives</a>
-    <section class="slide-placeholder">
-      <h1 class="h3 fw-bold mb-3">Estrutura de Slides (Placeholder)</h1>
-      <p class="mb-0">Substituir este conteúdo quando você enviar o material da live.</p>
-    </section>
-  </main>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+  <a href="./main.html" class="back-link">Voltar ao Menu</a>
+  <div class="reveal">
+    <div class="slides">
+      <section>
+        <div class="hero-box">
+          <h1>Ordenacao e Busca</h1>
+          <h3>Como encontrar dados rapido e preparar estruturas para consulta</h3>
+          <p class="small">Live 3 · Data Structure Strategy and Implementation</p>
+          <div class="pill-row">
+            <span class="pill">Busca linear</span>
+            <span class="pill">Busca binaria</span>
+            <span class="pill">Sort</span>
+            <span class="pill">Indices</span>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2>Por que ordenacao e busca importam?</h2>
+        <div class="grid-3">
+          <div class="glass-card">
+            <h4>Consulta rapida</h4>
+            <p>Boa parte dos sistemas nao "cria" dados o tempo todo. Eles passam boa parte do tempo consultando.</p>
+          </div>
+          <div class="glass-card">
+            <h4>Base para indices</h4>
+            <p>Ordenar e indexar sao passos centrais para permitir resposta rapida em catálogos, buscas e rankings.</p>
+          </div>
+          <div class="glass-card">
+            <h4>Custo real</h4>
+            <p>Escolher mal pode significar varrer tudo em <code>O(n)</code> quando dava para reduzir bastante o trabalho.</p>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2>Busca linear vs busca binaria</h2>
+        <table class="table table-sm table-bordered" style="font-size: 0.7em;">
+          <thead>
+            <tr>
+              <th>Busca</th>
+              <th>Pré-requisito</th>
+              <th>Custo</th>
+              <th>Quando usar</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Linear</td><td>nenhum</td><td>O(n)</td><td>lista pequena ou nao ordenada</td></tr>
+            <tr><td>Binaria</td><td>dados ordenados</td><td>O(log n)</td><td>consulta frequente em colecao ordenada</td></tr>
+          </tbody>
+        </table>
+        <div class="equation-box">
+          ordenar custa, mas pode valer muito a pena quando vamos buscar varias vezes
+        </div>
+      </section>
+
+      <section>
+        <h2>Principais algoritmos de ordenacao</h2>
+        <div class="grid-3">
+          <div class="glass-card">
+            <h4>Bubble / Selection / Insertion</h4>
+            <p>Didaticos e simples, mas em geral piores para listas grandes. Bons para aprender comparacoes e trocas.</p>
+          </div>
+          <div class="glass-card">
+            <h4>Merge Sort</h4>
+            <p>Divide e conquista. Custo classico de <code>O(n log n)</code> com comportamento previsivel.</p>
+          </div>
+          <div class="glass-card">
+            <h4>Quick Sort</h4>
+            <p>Muito usado na pratica. Em media vai muito bem, embora o pior caso exista.</p>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2>Quando ordenar compensa?</h2>
+        <div class="grid-2">
+          <div class="glass-card">
+            <h4>Cenario 1</h4>
+            <p>Você vai procurar um item uma unica vez em uma lista pequena. A busca linear pode ser suficiente.</p>
+          </div>
+          <div class="glass-card">
+            <h4>Cenario 2</h4>
+            <p>Você vai fazer milhares de consultas na mesma base. Ordenar ou indexar antes passa a fazer sentido.</p>
+          </div>
+        </div>
+        <div class="notes-row">
+          <div class="note">Sort nao e gratis: ele cobra na preparacao.</div>
+          <div class="note">A economia aparece quando a leitura e repetida.</div>
+        </div>
+      </section>
+
+      <section>
+        <h2>Busca no mundo real: catalogo, ranking e pesquisa</h2>
+        <div class="grid-3">
+          <div class="glass-card">
+            <h4>E-commerce</h4>
+            <p>Ordenar por preco, nota ou relevancia ajuda o usuario a encontrar mais rapido.</p>
+          </div>
+          <div class="glass-card">
+            <h4>Logs e observabilidade</h4>
+            <p>Buscar por termos, datas e campos estruturados exige mais do que varrer texto cru.</p>
+          </div>
+          <div class="glass-card">
+            <h4>Search engines</h4>
+            <p>Sistemas como Elasticsearch usam indices invertidos para responder buscas textuais com rapidez.</p>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2>Mini visao de um search engine</h2>
+        <p class="small">A consulta nao varre todos os documentos palavra por palavra. Ela usa um indice que diz onde cada termo aparece.</p>
+        <div class="search-stage">
+          <div class="search-panel panel-query">
+            <h4>Consulta</h4>
+            <p><code>busca = "python estrutura"</code></p>
+            <p>Tokenizacao das palavras da query.</p>
+          </div>
+          <div class="arrow-line arrow-a"></div>
+          <div class="search-panel panel-index">
+            <h4>Indice invertido</h4>
+            <p><strong>python</strong> → doc 1, doc 3, doc 7</p>
+            <p><strong>estrutura</strong> → doc 2, doc 3, doc 9</p>
+            <p><strong>arvore</strong> → doc 4, doc 6</p>
+            <p><strong>busca</strong> → doc 3, doc 5, doc 8</p>
+            <p>Em vez de olhar todos os textos, o sistema consulta o indice.</p>
+          </div>
+          <div class="arrow-line arrow-b"></div>
+          <div class="search-panel panel-results">
+            <h4>Resultados</h4>
+            <p>doc 3</p>
+            <p>doc 1</p>
+            <p>doc 2</p>
+            <p>ordenados por score de relevancia</p>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2>Passos de uma busca textual</h2>
+        <div class="steps-grid">
+          <div class="step-card">
+            <h4>1. Tokenizar</h4>
+            <p>Quebrar texto em termos.</p>
+          </div>
+          <div class="step-card">
+            <h4>2. Indexar</h4>
+            <p>Salvar onde cada termo aparece.</p>
+          </div>
+          <div class="step-card">
+            <h4>3. Consultar</h4>
+            <p>Buscar no indice em vez de no texto bruto.</p>
+          </div>
+          <div class="step-card">
+            <h4>4. Ranquear</h4>
+            <p>Ordenar documentos por relevancia.</p>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2>O notebook da aula</h2>
+        <div class="grid-2">
+          <div class="glass-card">
+            <h4>O que vamos construir</h4>
+            <p>Um mini mecanismo de busca inspirado em Elasticsearch: tokenizacao simples, indice invertido, consulta por termos e ranking por frequencia.</p>
+          </div>
+          <div class="glass-card">
+            <h4>Por que isso e bom para a aula?</h4>
+            <p>Porque conecta ordenacao, busca, estruturas de dicionario, listas e o custo real de procurar informacao em colecoes grandes.</p>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2>Resumo</h2>
+        <div class="grid-3">
+          <div class="glass-card">
+            <h4>Ordenacao</h4>
+            <p>Prepara dados para consultas mais eficientes e para organizacao de resultados.</p>
+          </div>
+          <div class="glass-card">
+            <h4>Busca</h4>
+            <p>Pode ser simples ou altamente otimizada dependendo da estrutura e do problema.</p>
+          </div>
+          <div class="glass-card">
+            <h4>Vida real</h4>
+            <p>Search, ranking, filtros, logs, catalogos e sistemas de recomendacao dependem disso o tempo todo.</p>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.js"></script>
+  <script>
+    Reveal.initialize({
+      hash: true,
+      slideNumber: true,
+      transition: 'slide'
+    });
+  </script>
 </body>
 </html>
